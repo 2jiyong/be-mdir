@@ -13,9 +13,9 @@ public class TextWriter {
         this.writePath = writePath;
     }
 
-    public void write(String title, TextContent textContent) {
+    private void write(String title, TextContent textContent, boolean append) {
         String filePath = writePath +"/"+title+".txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {
             writer.write(textContent.getText());
         } catch (IOException e) {
             return;
@@ -23,11 +23,10 @@ public class TextWriter {
     }
 
     public void appendWrite(String title, TextContent textContent) {
-        String filePath = writePath +"/"+title+".txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,true))) {
-            writer.write(textContent.getText());
-        } catch (IOException e) {
-            return;
-        }
+        write(title,textContent,true);
+    }
+
+    public void overWrite(String title, TextContent textContent) {
+        write(title,textContent,false);
     }
 }

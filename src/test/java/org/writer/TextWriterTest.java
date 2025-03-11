@@ -18,7 +18,7 @@ public class TextWriterTest {
     void testTextWriter() {
         String title = "writer";
         TextContent textContent = new TextContent("hello writer");
-        writer.write(title,textContent);
+        writer.overWrite(title,textContent);
         assertThat(reader.read(path+"/"+title+".txt").get().getText()).isEqualTo("hello writer");
     }
 
@@ -28,7 +28,7 @@ public class TextWriterTest {
         String title = "append";
         // 파일 추가
         TextContent textContent = new TextContent("hello append1");
-        writer.write(title,textContent);
+        writer.overWrite(title,textContent);
 
         TextContent appendText = new TextContent(" append2");
         writer.appendWrite(title,appendText);
