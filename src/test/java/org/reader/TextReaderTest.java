@@ -17,7 +17,7 @@ public class TextReaderTest {
     @Test
     @DisplayName("TextReader가 텍스트 파일의 내용으로 텍스트 객체를 생성할 수 있다.")
     void textReader_read_text_file(){
-        String path = "hello.txt";
+        String path = "files/hello.txt";
         Optional<TextContent> textContent = textReader.read(path);
         assertThat(textContent).isPresent();
         assertThat(textContent.get().getText()).isEqualTo("hello world");
@@ -26,7 +26,7 @@ public class TextReaderTest {
     @Test
     @DisplayName("TextReader가 잘못된 path를 받으면 Optional empty를 반환한다.")
     void textReader_read_text_file_wrong_path(){
-        String wrongPath = "hell.txt";
+        String wrongPath = "files/hell.txt";
         assertThat(textReader.read(wrongPath)).isEqualTo(Optional.empty());
     }
 }
