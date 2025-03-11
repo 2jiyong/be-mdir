@@ -14,22 +14,22 @@ public class TextWriterTest {
     @Test
     @DisplayName("TextWriter가 해당 경로에 TextContent의 내용을 담은 파일을 만들 수 있다.")
     void testTextWriter() {
-        String title = "writer";
+        String title = "writer.txt";
         TextContent textContent = new TextContent("hello writer");
         writer.overWrite(title,textContent);
-        assertThat(reader.read(path+"/"+title+".txt").get().getText()).isEqualTo("hello writer");
+        assertThat(reader.read(path+"/"+title).get().getText()).isEqualTo("hello writer");
     }
 
     @Test
     @DisplayName("해당 경로에 이미 파일이 있다면, 내용을 추가할 수 있다.")
     void testTextWriterAppend() {
-        String title = "append";
+        String title = "append.txt";
         // 파일 추가
         TextContent textContent = new TextContent("hello append1");
         writer.overWrite(title,textContent);
 
         TextContent appendText = new TextContent(" append2");
         writer.appendWrite(title,appendText);
-        assertThat(reader.read(path+"/"+title+".txt").get().getText()).isEqualTo("hello append1 append2");
+        assertThat(reader.read(path+"/"+title).get().getText()).isEqualTo("hello append1 append2");
     }
 }

@@ -14,7 +14,7 @@ public class TextWriter {
     }
 
     private void write(String title, TextContent textContent, boolean append) {
-        String filePath = writePath +"/"+title+".txt";
+        String filePath = writePath +"/"+title;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {
             writer.write(textContent.getText());
         } catch (IOException e) {
