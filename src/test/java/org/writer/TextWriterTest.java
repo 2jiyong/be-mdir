@@ -6,8 +6,6 @@ import org.reader.TextReader;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Optional;
-
 public class TextWriterTest {
     TextReader reader = new TextReader();
     String path = "files";

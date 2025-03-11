@@ -21,9 +21,4 @@ public class TextReader {
         if(!text.isEmpty()) text.deleteCharAt(text.length() - 1);
         return Optional.of(new TextContent(text.toString()));
     }
-
-    public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
-    }
-
 }
