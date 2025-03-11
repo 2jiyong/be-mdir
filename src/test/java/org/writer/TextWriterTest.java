@@ -19,6 +19,6 @@ public class TextWriterTest {
         TextContent textContent = new TextContent("hello writer");
         TextWriter textWriter = new TextWriter(path);
         textWriter.write(title,textContent);
-        assertThat(reader.read(path+"/"+title).get().getText()).isEqualTo("hello writer");
+        assertThat(reader.read(path+"/"+title+".txt").get().getText()).isEqualTo("hello writer");
     }
 }
