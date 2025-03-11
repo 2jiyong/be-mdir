@@ -6,8 +6,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Optional;
-
+/**
+ * 이 클래스는 텍스트 파일을 읽어오는 클래스입니다.
+ */
 public class TextReader {
+    /**
+     * 경로를 받아 해당 파일을 읽어 TextContent로 만들어 반환하는 클래스입니다.
+     *
+     * @param path 경로
+     * @return Optional (만약 path에 파일이 없으면 empty)
+     */
     public Optional<TextContent> read(String path) {
         StringBuilder text = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {

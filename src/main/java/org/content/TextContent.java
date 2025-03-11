@@ -1,5 +1,8 @@
 package org.content;
 
+/**
+ * 이 클래스는 메모장의 텍스트를 객체로 나타낸 것입니다.
+ */
 public class TextContent {
     private String text;
 
