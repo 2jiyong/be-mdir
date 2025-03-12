@@ -26,12 +26,13 @@ public class NoteView {
 
         // 버튼 패널에 추가
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS)); // 세로 정렬
         buttonPanel.add(loadButton);
         buttonPanel.add(saveButton);
 
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
-        frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        frame.getContentPane().add(buttonPanel, BorderLayout.EAST);
 
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
