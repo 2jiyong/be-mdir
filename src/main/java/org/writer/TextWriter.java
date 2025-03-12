@@ -3,17 +3,20 @@ package org.writer;
 import org.content.TextContent;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+
 /**
  * 이 클래스는 텍스트 파일을 만들거나 쓰는 기능을 제공합니다.
  */
 public class TextWriter {
-    private final String writePath;
+    private final Path writePath;
     /**
      * 이 클래스는 경로를 받아, 그 경로에만 파일을 씁니다.
      */
-    public TextWriter(String writePath) {
+    public TextWriter(Path writePath) {
         this.writePath = writePath;
     }
     /**
@@ -22,22 +25,10 @@ public class TextWriter {
      * @param title 파일의 제목
      * @param textContent 파일에 쓸 내용
      */
-    public void appendWrite(String title, TextContent textContent) {
-        write(title,textContent,true);
-    }
-    /**
-     * 이 메서드는 해당 경로에 받은 제목으로 파일을 추가합니다.
-     *
-     * @param title 파일의 제목
-     * @param textContent 파일에 쓸 내용
-     */
-    public void overWrite(String title, TextContent textContent) {
-        write(title,textContent,false);
-    }
 
-    private void write(String title, TextContent textContent, boolean append) {
-        String filePath = writePath +"/"+title;
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {
+    public void write(String title, TextContent textContent) {
+        Path filePath = writePath.resolve(title);
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE)) {
             writer.write(textContent.getText());
         } catch (IOException e) {
             return;
