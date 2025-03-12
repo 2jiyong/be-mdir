@@ -46,7 +46,7 @@ public class NoteView {
         frame.getContentPane().add(buttonPanel, BorderLayout.EAST);
 
         loadButton.addActionListener(e -> setLoadButton());
-        saveButton.addActionListener(e -> setSaveButton());
+        saveButton.addActionListener(e -> addSaveButtons());
 
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
@@ -66,7 +66,38 @@ public class NoteView {
         }
     }
 
+    private void addSaveButtons() {
+        String[] options = {"저장하기", "다른 이름으로 저장하기"}; // 버튼 이름 지정
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "어떤 작업을 할까요?", // 메시지 내용
+                "선택하세요", // 다이얼로그 제목
+                JOptionPane.DEFAULT_OPTION, // 옵션 타입
+                JOptionPane.INFORMATION_MESSAGE, // 아이콘 타입
+                null, // 아이콘 (null이면 기본)
+                options, // 버튼 리스트
+                options[0] // 기본 선택 버튼
+        );
+
+        if (choice == 0) {
+            setSaveButton();
+        } else if (choice == 1) {
+            setSaveOtherNameButton();
+        }
+    }
+
     private void setSaveButton(){
+        if (currentPath.isPresent()) {
+            textWriter.write(currentPath.get(), getTextByTextContent());
+        } else{
+            JOptionPane.showMessageDialog(
+                    null,
+                    "잘못됨"
+            );
+        }
+    }
+
+    private void setSaveOtherNameButton(){
         String title = JOptionPane.showInputDialog(
                 null,
                 "저장할 제목을 입력하세요:",
@@ -74,7 +105,7 @@ public class NoteView {
                 JOptionPane.PLAIN_MESSAGE
         );
         if (title != null && !title.trim().isEmpty()) {
-            textWriter.write(title,getText());
+            textWriter.write(Paths.get(title), getTextByTextContent());
         }
     }
 
@@ -82,7 +113,7 @@ public class NoteView {
         SwingUtilities.invokeLater(() -> textArea.setText(textContent.getText()));
     }
 
-    private TextContent getText() {
+    private TextContent getTextByTextContent() {
         return new TextContent(textArea.getText());
     }
 }
