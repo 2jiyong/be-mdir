@@ -6,13 +6,15 @@ import org.view.NoteView;
 import org.writer.TextWriter;
 
 import javax.swing.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class GUIMain {
     public static void main(String[] args) {
-        String path = "files";
+        Path basePath = Paths.get("files");
         TextReader reader = new TextReader();
-        TextWriter writer = new TextWriter(path);
+        TextWriter writer = new TextWriter(basePath);
 
         NoteView noteView = new NoteView();
         noteView.addLoadButtonActionListener(e -> {
@@ -24,7 +26,8 @@ public class GUIMain {
                     JOptionPane.PLAIN_MESSAGE
             );
             if (filePath != null && !filePath.trim().isEmpty()) {
-                Optional<TextContent> text = reader.read(filePath);
+                Path filePath1 = Paths.get(filePath);
+                Optional<TextContent> text = reader.read(filePath1);
                 text.ifPresent(noteView::setText);
             }
         });
