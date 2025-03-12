@@ -1,18 +1,30 @@
 package org.view;
 
 import org.content.TextContent;
+import org.reader.TextReader;
+import org.writer.TextWriter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 
 public class NoteView {
-    private JFrame frame;
-    private JTextArea textArea;
-    private JButton loadButton;
-    private JButton saveButton;
+    private final JFrame frame;
+    private final JTextArea textArea;
+    private final JButton loadButton;
+    private final JButton saveButton;
+    private final TextReader textReader;
+    private final TextWriter textWriter;
 
-    public NoteView() {
+    public NoteView(TextReader textReader, TextWriter textWriter) {
+        this.textReader = textReader;
+        this.textWriter = textWriter;
+
         frame = new JFrame("메모장");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(700, 400);
@@ -34,7 +46,24 @@ public class NoteView {
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.getContentPane().add(buttonPanel, BorderLayout.EAST);
 
+        loadButton.addActionListener(e -> setLoadButton());
+
+
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
+    }
+
+    private void setLoadButton(){
+        String stringFilePath = JOptionPane.showInputDialog(
+                null,
+                "불러올 파일 경로를 입력하세요:",
+                "파일 불러오기",
+                JOptionPane.PLAIN_MESSAGE
+        );
+        if (stringFilePath != null && !stringFilePath.trim().isEmpty()) {
+            Path filePath = Paths.get(stringFilePath);
+            Optional<TextContent> text = textReader.read(filePath);
+            text.ifPresent(this::setText);
+        }
     }
 
 
@@ -44,15 +73,5 @@ public class NoteView {
 
     public void setText(TextContent textContent) {
         SwingUtilities.invokeLater(() -> textArea.setText(textContent.getText()));
-    }
-
-    // 불러오기 버튼에 액션 리스너를 등록하는 메서드
-    public void addLoadButtonActionListener(ActionListener listener) {
-        loadButton.addActionListener(listener);
-    }
-
-    // 저장하기 버튼에 액션 리스너를 등록하는 메서드
-    public void addSaveButtonActionListener(ActionListener listener) {
-        saveButton.addActionListener(listener);
     }
 }
