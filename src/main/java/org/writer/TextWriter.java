@@ -25,7 +25,6 @@ public class TextWriter {
      * @param title 파일의 제목
      * @param textContent 파일에 쓸 내용
      */
-
     public void write(Path title, TextContent textContent) {
         Path filePath = writePath.resolve(title);
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE)) {
