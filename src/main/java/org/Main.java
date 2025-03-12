@@ -27,7 +27,7 @@ public class Main {
                 String[] inputs = input.split(" ");
                 String title = inputs[1];
                 TextContent textContent = new TextContent(inputs[2]);
-                writer.write(title, textContent);
+                writer.write(Paths.get(title), textContent);
             }
         }
     }

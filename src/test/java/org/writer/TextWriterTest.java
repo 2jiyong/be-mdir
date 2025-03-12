@@ -19,7 +19,7 @@ public class TextWriterTest {
     void testTextWriter() {
         String title = "writer.txt";
         TextContent textContent = new TextContent("hello writer");
-        writer.write(title,textContent);
+        writer.write(Paths.get(title),textContent);
         Path writePath = basePath.resolve(title);
         assertThat(reader.read(writePath).get().getText()).isEqualTo("hello writer");
     }

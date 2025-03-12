@@ -20,7 +20,7 @@ public class TextReaderTest {
         basePath = Paths.get("files");
         textReader = new TextReader(basePath);
         textWriter = new TextWriter(basePath);
-        textWriter.write("hello.txt", new TextContent("hello world"));
+        textWriter.write(Paths.get("hello.txt"), new TextContent("hello world"));
     }
 
     @Test
