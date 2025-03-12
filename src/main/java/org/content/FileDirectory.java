@@ -6,6 +6,7 @@ import java.util.List;
 
 public class FileDirectory {
     private File directory;
+    private static final File rootDirectory = new File("C://");
     private final List<File> directories;
     private final List<File> files;
 
@@ -16,6 +17,7 @@ public class FileDirectory {
     }
 
     public void setDirectory(File directory) {
+        if(directory.exists()) return;
         this.directory = directory;
         getFilesAndDirectories();
     }
@@ -38,6 +40,7 @@ public class FileDirectory {
     private String getDirectoriesString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(File file : directories) {
+            stringBuilder.append("/");
             stringBuilder.append(file.getName());
             stringBuilder.append("\n");
         }
