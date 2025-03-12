@@ -12,10 +12,10 @@ import java.util.Optional;
  * 이 클래스는 텍스트 파일을 읽어오는 클래스입니다.
  */
 public class TextReader {
-    private Path filePath;
+    private Path basePath;
 
-    public TextReader(Path filePath) {
-        this.filePath = filePath;
+    public TextReader(Path basePath) {
+        this.basePath = basePath;
     }
 
     /**
@@ -25,8 +25,9 @@ public class TextReader {
      * @return Optional (만약 path에 파일이 없으면 empty)
      */
     public Optional<TextContent> read(Path path) {
+        Path filePath = basePath.resolve(path);
         StringBuilder text = new StringBuilder();
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+        try (BufferedReader br = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
             String line;
             while ((line = br.readLine()) != null) {
                 text.append(line).append("\n");

@@ -61,13 +61,14 @@ public class NoteView {
         );
         if (stringFilePath != null && !stringFilePath.trim().isEmpty()) {
             Path filePath = Paths.get(stringFilePath);
-            if (Files.exists(filePath)){
-                Optional<TextContent> text = textReader.read(filePath);
+
+            Optional<TextContent> text = textReader.read(filePath);
+            if (text.isPresent()) {
                 currentPath = Optional.of(filePath);
-                text.ifPresent(this::setText);
+                setText(text.get());
                 return;
             }
-            showText("해당하는 파일이 없어 불러오지 못했습니다.");
+            showMessage("해당하는 파일이 없어 불러오지 못했습니다.");
         }
     }
 
@@ -95,7 +96,7 @@ public class NoteView {
         if (currentPath.isPresent()) {
             textWriter.write(currentPath.get(), getTextByTextContent());
         } else{
-            showText("다른 이름으로 저장해야 합니다.");
+            setSaveOtherNameButton();
         }
     }
 
@@ -108,12 +109,12 @@ public class NoteView {
         );
         if (title != null && !title.trim().isEmpty()) {
             Path savePath = Paths.get(title);
-            if(Files.exists(savePath)) showText("덮어쓰기 합니다.");
+            if(Files.exists(savePath)) showMessage("덮어쓰기 합니다.");
             textWriter.write(savePath, getTextByTextContent());
             currentPath = Optional.of(savePath);
             return;
         }
-        showText("파일명을 입력하세요");
+        showMessage("파일명을 입력하세요");
     }
 
     private void setText(TextContent textContent) {
@@ -124,7 +125,7 @@ public class NoteView {
         return new TextContent(textArea.getText());
     }
 
-    private void showText(String text){
+    private void showMessage(String text){
         JOptionPane.showMessageDialog(
                 null,
                 text
