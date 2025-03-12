@@ -4,12 +4,15 @@ import org.content.TextContent;
 import org.junit.jupiter.api.*;
 import org.reader.TextReader;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.assertj.core.api.Assertions.*;
 
 public class TextWriterTest {
     TextReader reader = new TextReader();
-    String path = "files";
-    TextWriter writer = new TextWriter(path);
+    Path basePath = Paths.get("files");
+    TextWriter writer = new TextWriter(basePath);
 
     @Test
     @DisplayName("TextWriter가 해당 경로에 TextContent의 내용을 담은 파일을 만들 수 있다.")
@@ -17,7 +20,8 @@ public class TextWriterTest {
         String title = "writer.txt";
         TextContent textContent = new TextContent("hello writer");
         writer.overWrite(title,textContent);
-        assertThat(reader.read(path+"/"+title).get().getText()).isEqualTo("hello writer");
+        Path writePath = basePath.resolve(title);
+        assertThat(reader.read(writePath).get().getText()).isEqualTo("hello writer");
     }
 
     @Test
@@ -30,6 +34,6 @@ public class TextWriterTest {
 
         TextContent appendText = new TextContent(" append2");
         writer.appendWrite(title,appendText);
-        assertThat(reader.read(path+"/"+title).get().getText()).isEqualTo("hello append1 append2");
+        assertThat(reader.read(basePath.resolve(title)).get().getText()).isEqualTo("hello append1 append2");
     }
 }
