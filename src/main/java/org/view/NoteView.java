@@ -6,6 +6,7 @@ import org.writer.TextWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class NoteView {
         this.textWriter = textWriter;
         currentPath = Optional.empty();
 
-        frame = new JFrame("메모장");
+        frame = new JFrame("GUI 메모장");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(700, 400);
 
@@ -60,9 +61,13 @@ public class NoteView {
         );
         if (stringFilePath != null && !stringFilePath.trim().isEmpty()) {
             Path filePath = Paths.get(stringFilePath);
-            Optional<TextContent> text = textReader.read(filePath);
-            currentPath = Optional.of(filePath);
-            text.ifPresent(this::setText);
+            if (Files.exists(filePath)){
+                Optional<TextContent> text = textReader.read(filePath);
+                currentPath = Optional.of(filePath);
+                text.ifPresent(this::setText);
+                return;
+            }
+            showText("해당하는 파일이 없어 불러오지 못했습니다.");
         }
     }
 
@@ -90,10 +95,7 @@ public class NoteView {
         if (currentPath.isPresent()) {
             textWriter.write(currentPath.get(), getTextByTextContent());
         } else{
-            JOptionPane.showMessageDialog(
-                    null,
-                    "잘못됨"
-            );
+            showText("다른 이름으로 저장해야 합니다.");
         }
     }
 
@@ -105,8 +107,13 @@ public class NoteView {
                 JOptionPane.PLAIN_MESSAGE
         );
         if (title != null && !title.trim().isEmpty()) {
-            textWriter.write(Paths.get(title), getTextByTextContent());
+            Path savePath = Paths.get(title);
+            if(Files.exists(savePath)) showText("덮어쓰기 합니다.");
+            textWriter.write(savePath, getTextByTextContent());
+            currentPath = Optional.of(savePath);
+            return;
         }
+        showText("파일명을 입력하세요");
     }
 
     private void setText(TextContent textContent) {
@@ -115,5 +122,12 @@ public class NoteView {
 
     private TextContent getTextByTextContent() {
         return new TextContent(textArea.getText());
+    }
+
+    private void showText(String text){
+        JOptionPane.showMessageDialog(
+                null,
+                text
+        );
     }
 }
