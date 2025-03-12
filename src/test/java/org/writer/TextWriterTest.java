@@ -19,21 +19,8 @@ public class TextWriterTest {
     void testTextWriter() {
         String title = "writer.txt";
         TextContent textContent = new TextContent("hello writer");
-        writer.overWrite(title,textContent);
+        writer.write(title,textContent);
         Path writePath = basePath.resolve(title);
         assertThat(reader.read(writePath).get().getText()).isEqualTo("hello writer");
-    }
-
-    @Test
-    @DisplayName("해당 경로에 이미 파일이 있다면, 내용을 추가할 수 있다.")
-    void testTextWriterAppend() {
-        String title = "append.txt";
-        // 파일 추가
-        TextContent textContent = new TextContent("hello append1");
-        writer.overWrite(title,textContent);
-
-        TextContent appendText = new TextContent(" append2");
-        writer.appendWrite(title,appendText);
-        assertThat(reader.read(basePath.resolve(title)).get().getText()).isEqualTo("hello append1 append2");
     }
 }
