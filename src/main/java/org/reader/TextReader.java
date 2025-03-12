@@ -3,8 +3,10 @@ package org.reader;
 import org.content.TextContent;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 /**
  * 이 클래스는 텍스트 파일을 읽어오는 클래스입니다.
@@ -16,9 +18,9 @@ public class TextReader {
      * @param path 경로
      * @return Optional (만약 path에 파일이 없으면 empty)
      */
-    public Optional<TextContent> read(String path) {
+    public Optional<TextContent> read(Path path) {
         StringBuilder text = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
             while ((line = br.readLine()) != null) {
                 text.append(line).append("\n");
