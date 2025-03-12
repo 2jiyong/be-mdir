@@ -6,12 +6,9 @@ import org.writer.TextWriter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 
 public class NoteView {
     private final JFrame frame;
@@ -20,10 +17,12 @@ public class NoteView {
     private final JButton saveButton;
     private final TextReader textReader;
     private final TextWriter textWriter;
+    private Optional<Path> currentPath;
 
     public NoteView(TextReader textReader, TextWriter textWriter) {
         this.textReader = textReader;
         this.textWriter = textWriter;
+        currentPath = Optional.empty();
 
         frame = new JFrame("메모장");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,7 +46,7 @@ public class NoteView {
         frame.getContentPane().add(buttonPanel, BorderLayout.EAST);
 
         loadButton.addActionListener(e -> setLoadButton());
-
+        saveButton.addActionListener(e -> setSaveButton());
 
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
@@ -62,16 +61,28 @@ public class NoteView {
         if (stringFilePath != null && !stringFilePath.trim().isEmpty()) {
             Path filePath = Paths.get(stringFilePath);
             Optional<TextContent> text = textReader.read(filePath);
+            currentPath = Optional.of(filePath);
             text.ifPresent(this::setText);
         }
     }
 
-
-    public void addText(TextContent textContent) {
-        SwingUtilities.invokeLater(() -> textArea.append(textContent.getText()));
+    private void setSaveButton(){
+        String title = JOptionPane.showInputDialog(
+                null,
+                "저장할 제목을 입력하세요:",
+                "파일 저장하기",
+                JOptionPane.PLAIN_MESSAGE
+        );
+        if (title != null && !title.trim().isEmpty()) {
+            textWriter.write(title,getText());
+        }
     }
 
-    public void setText(TextContent textContent) {
+    private void setText(TextContent textContent) {
         SwingUtilities.invokeLater(() -> textArea.setText(textContent.getText()));
+    }
+
+    private TextContent getText() {
+        return new TextContent(textArea.getText());
     }
 }
