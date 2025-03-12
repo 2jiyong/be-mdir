@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.*;
 
 public class TextWriterTest {
-    TextReader reader = new TextReader();
     Path basePath = Paths.get("files");
+    TextReader reader = new TextReader(basePath);
     TextWriter writer = new TextWriter(basePath);
 
     @Test

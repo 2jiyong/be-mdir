@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Path basePath = Paths.get("files");
-        TextReader reader = new TextReader();
+        TextReader reader = new TextReader(basePath);
         TextWriter writer = new TextWriter(basePath);
         Scanner sc = new Scanner(System.in);
         while (true) {

@@ -17,8 +17,8 @@ public class TextReaderTest {
 
     @BeforeEach
     void setUp() {
-        textReader = new TextReader();
         basePath = Paths.get("files");
+        textReader = new TextReader(basePath);
         textWriter = new TextWriter(basePath);
         textWriter.write("hello.txt", new TextContent("hello world"));
     }
