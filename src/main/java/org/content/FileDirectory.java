@@ -6,8 +6,8 @@ import java.util.List;
 
 public class FileDirectory {
     private File directory;
-    private List<File> directories;
-    private List<File> files;
+    private final List<File> directories;
+    private final List<File> files;
 
     public FileDirectory() {
         this.directory = new File("C://");
@@ -17,19 +17,22 @@ public class FileDirectory {
 
     public void setDirectory(File directory) {
         this.directory = directory;
-    }
-
-    public void getFilesAndDirectories() {
-        File[] directoryFiles = directory.listFiles();
-        for(File file : directoryFiles) {
-            if(file.isDirectory()) directories.add(file);
-            else files.add(file);
-        }
+        getFilesAndDirectories();
     }
 
     public void printFiles() {
         System.out.print(getDirectoriesString());
         System.out.print(getFilesString());
+    }
+
+    private void getFilesAndDirectories() {
+        File[] directoryFiles = directory.listFiles();
+        directories.clear();
+        files.clear();
+        for(File file : directoryFiles) {
+            if(file.isDirectory()) directories.add(file);
+            else files.add(file);
+        }
     }
 
     private String getDirectoriesString(){
@@ -49,7 +52,4 @@ public class FileDirectory {
         }
         return stringBuilder.toString();
     }
-
-
-
 }
