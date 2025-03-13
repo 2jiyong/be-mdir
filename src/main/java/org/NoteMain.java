@@ -7,7 +7,7 @@ import org.writer.TextWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class GUIMain {
+public class NoteMain {
     public static void main(String[] args) {
         Path basePath = Paths.get("files");
         TextReader reader = new TextReader(basePath);
