@@ -1,13 +1,14 @@
 package org.content;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class FileDirectory {
-    private static final String ROOT_DIRECTORY_PATH = "C:\\";
-    private static final String PARENT_PATH = "/..";
+    public static final String ROOT_DIRECTORY_PATH = "C:\\";
+    public static final String PARENT_PATH = "/..";
     private File directory;
     private Optional<File> parentDirectory;
     private final List<File> directories;
@@ -32,8 +33,12 @@ public class FileDirectory {
         System.out.print(getFilesString());
     }
 
-    public List<File> getDirectories() {
-        return directories;
+    public List<File> getAllFiles() {
+        List<File> allFiles = new ArrayList<>();
+        parentDirectory.ifPresent(allFiles::add);
+        allFiles.addAll(directories);
+        allFiles.addAll(files);
+        return allFiles;
     }
 
     public String getParentString(){
@@ -60,24 +65,27 @@ public class FileDirectory {
     }
 
     private void setFilesAndDirectories() {
+        if(isRootDirectory(directory)) {
+            parentDirectory = Optional.empty();
+        }
         File[] directoryFiles = directory.listFiles();
         directories.clear();
         files.clear();
         if(!isRootDirectory(directory)) {
             parentDirectory = Optional.of(directory.getParentFile());
         }
-
+        if(directoryFiles == null) return;
         for(File file : directoryFiles) {
             if(file.isDirectory()) directories.add(file);
             else files.add(file);
         }
     }
 
-    private boolean isRootDirectory(File file) {
+    public static boolean isRootDirectory(File file) {
         return file.getAbsolutePath().equals(ROOT_DIRECTORY_PATH);
     }
 
-    private File getRootDirectory() {
+    public static File getRootDirectory() {
         return new File(ROOT_DIRECTORY_PATH);
     }
 }

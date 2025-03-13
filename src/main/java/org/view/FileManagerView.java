@@ -20,6 +20,7 @@ public class FileManagerView extends JFrame {
     private FileDirectory rightDirectory;
     private JList<File> leftFileList;
     private JList<File> rightFileList;
+    private File currentDirectory;
 
     public FileManagerView() {
         super("파일 탐색기");
@@ -30,9 +31,10 @@ public class FileManagerView extends JFrame {
 
         leftDirectory = new FileDirectory();
         rightDirectory = new FileDirectory();
+        currentDirectory = FileDirectory.getRootDirectory();
 
-        leftFileList = new JList<>(leftDirectory.getDirectories().toArray(new File[0]));
-        rightFileList = new JList<>(rightDirectory.getDirectories().toArray(new File[0]));
+        leftFileList = new JList<>(leftDirectory.getAllFiles().toArray(new File[0]));
+        rightFileList = new JList<>(rightDirectory.getAllFiles().toArray(new File[0]));
 
         leftFileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rightFileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -65,11 +67,12 @@ public class FileManagerView extends JFrame {
     }
 
     private void updateFileList(File file) {
-        leftDirectory.setDirectory(file);
+        if(FileDirectory.isRootDirectory(file)) leftDirectory.setDirectory(file);
+        else leftDirectory.setDirectory(file.getParentFile());
         rightDirectory.setDirectory(file);
 
-        leftFileList.setListData(leftDirectory.getDirectories().toArray(new File[0]));
-        rightFileList.setListData(rightDirectory.getDirectories().toArray(new File[0]));
+        leftFileList.setListData(leftDirectory.getAllFiles().toArray(new File[0]));
+        rightFileList.setListData(rightDirectory.getAllFiles().toArray(new File[0]));
 
         renew(leftFileList);
         renew(rightFileList);
