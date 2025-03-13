@@ -23,7 +23,7 @@ public class FileDirectory {
     public void setDirectory(File directory) {
         if(!directory.exists()) return;
         this.directory = directory;
-        getFilesAndDirectories();
+        setFilesAndDirectories();
     }
 
     public void printFiles() {
@@ -32,18 +32,8 @@ public class FileDirectory {
         System.out.print(getFilesString());
     }
 
-    private void getFilesAndDirectories() {
-        File[] directoryFiles = directory.listFiles();
-        directories.clear();
-        files.clear();
-        if(!isRootDirectory(directory)) {
-            parentDirectory = Optional.of(directory.getParentFile());
-        }
-
-        for(File file : directoryFiles) {
-            if(file.isDirectory()) directories.add(file);
-            else files.add(file);
-        }
+    public List<File> getDirectories() {
+        return directories;
     }
 
     public String getParentString(){
@@ -67,6 +57,20 @@ public class FileDirectory {
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    private void setFilesAndDirectories() {
+        File[] directoryFiles = directory.listFiles();
+        directories.clear();
+        files.clear();
+        if(!isRootDirectory(directory)) {
+            parentDirectory = Optional.of(directory.getParentFile());
+        }
+
+        for(File file : directoryFiles) {
+            if(file.isDirectory()) directories.add(file);
+            else files.add(file);
+        }
     }
 
     private boolean isRootDirectory(File file) {

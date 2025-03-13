@@ -7,6 +7,8 @@ import org.writer.TextWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,8 +57,45 @@ public class FileManagerView extends JFrame {
         JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftRightSplitPane, buttonPanel);
         mainSplitPane.setDividerLocation(850); // 오른쪽 버튼 패널을 작게 설정
 
+        addEventToList();
+
         add(mainSplitPane);
 
         SwingUtilities.invokeLater(() -> this.setVisible(true));
+    }
+
+    private void updateFileList(File file) {
+        leftDirectory.setDirectory(file);
+        rightDirectory.setDirectory(file);
+
+        leftFileList.setListData(leftDirectory.getDirectories().toArray(new File[0]));
+        rightFileList.setListData(rightDirectory.getDirectories().toArray(new File[0]));
+
+        renew(leftFileList);
+        renew(rightFileList);
+    }
+
+    private void addEventToList(){
+        addDoubleClickEvent(leftFileList);
+        addDoubleClickEvent(rightFileList);
+    }
+
+    private void addDoubleClickEvent(JList<File> fileList) {
+        fileList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // 더블 클릭 감지
+                    File selectedFile = fileList.getSelectedValue();
+                    if (selectedFile != null) {
+                        updateFileList(selectedFile);
+                    }
+                }
+            }
+        });
+    }
+
+    private void renew(JList<File> list) {
+        list.repaint();
+        list.revalidate();
     }
 }
