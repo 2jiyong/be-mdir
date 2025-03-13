@@ -11,13 +11,13 @@ public class FileDirectoryTest {
 
     @BeforeEach
     void setUp() {
-        fileDirectory = new FileDirectory(false);
+        fileDirectory = new FileDirectory();
     }
 
     @Test
     @DisplayName("FileDirectory 객체를 생성하고 초기값으로 초기화 할 수 있다.")
     void 객체_초기화_생성(){
-        fileDirectory = new FileDirectory(false);
+        fileDirectory = new FileDirectory();
     }
 
     @Test

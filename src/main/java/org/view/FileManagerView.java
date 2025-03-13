@@ -1,27 +1,21 @@
 package org.view;
 
 import org.content.FileDirectory;
-import org.content.TextContent;
-import org.reader.TextReader;
-import org.writer.TextWriter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 public class FileManagerView extends JFrame {
     private FileDirectory leftDirectory;
     private FileDirectory rightDirectory;
     private JList<String> leftFileList;
     private JList<String> rightFileList;
-    private File currentDirectory;
+    private JLabel leftPathLabel;
+    private JLabel rightPathLabel;
 
     public FileManagerView() {
         super("파일 탐색기");
@@ -30,18 +24,32 @@ public class FileManagerView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(1, 2));
 
-        leftDirectory = new FileDirectory(true);
-        rightDirectory = new FileDirectory(false);
-        currentDirectory = FileDirectory.getRootDirectory();
+        leftDirectory = new FileDirectory();
+        rightDirectory = new FileDirectory();
 
-        leftFileList = new JList<>(leftDirectory.getAllFilesString().toArray(new String[0]));
-        rightFileList = new JList<>(rightDirectory.getAllFilesString().toArray(new String[0]));
+        List<String> leftStringList = leftDirectory.getAllString();
+        List<String> rightStringList = rightDirectory.getAllString();
+        leftStringList.add(0,FileDirectory.ROOT_DIRECTORY_PATH);
+
+        leftFileList = new JList<>(leftStringList.toArray(new String[0]));
+        rightFileList = new JList<>(rightStringList.toArray(new String[0]));
 
         leftFileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rightFileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane leftScrollPane = new JScrollPane(leftFileList);
         JScrollPane rightScrollPane = new JScrollPane(rightFileList);
+
+        leftPathLabel = new JLabel(leftDirectory.getAbsolutePath());
+        rightPathLabel = new JLabel(leftDirectory.getAbsolutePath());
+
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.add(leftPathLabel, BorderLayout.NORTH);
+        leftPanel.add(leftScrollPane, BorderLayout.CENTER);
+
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.add(rightPathLabel, BorderLayout.NORTH);
+        rightPanel.add(rightScrollPane, BorderLayout.CENTER);
 
         // 버튼 추가
         JPanel buttonPanel = new JPanel();
@@ -53,7 +61,7 @@ public class FileManagerView extends JFrame {
         buttonPanel.add(moveRightButton);
 
 
-        JSplitPane leftRightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
+        JSplitPane leftRightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         leftRightSplitPane.setDividerLocation(450); // 중간에 나누기 (창 크기 따라 자동 조정)
 
         // 1,2번 패널과 3번(버튼)을 조합
@@ -72,11 +80,21 @@ public class FileManagerView extends JFrame {
         else leftDirectory.setDirectory(file.getParentFile());
         rightDirectory.setDirectory(file);
 
-        leftFileList.setListData(leftDirectory.getAllFilesString().toArray(new String[0]));
-        rightFileList.setListData(rightDirectory.getAllFilesString().toArray(new String[0]));
+        List<String> leftStringList = leftDirectory.getAllString();
+        List<String> rightStringList = rightDirectory.getAllString();
+        leftStringList.add(0,FileDirectory.ROOT_DIRECTORY_PATH);
+        if (!FileDirectory.isRootDirectory(rightDirectory.getDirectory())) rightStringList.add(0,FileDirectory.PARENT_PATH);
+
+        leftFileList.setListData(leftStringList.toArray(new String[0]));
+        rightFileList.setListData(rightStringList.toArray(new String[0]));
+
+        leftPathLabel.setText(leftDirectory.getAbsolutePath());
+        rightPathLabel.setText(rightDirectory.getAbsolutePath());
 
         renew(leftFileList);
         renew(rightFileList);
+        renew(leftPathLabel);
+        renew(rightPathLabel);
     }
 
     private void addEventToList(){
@@ -123,6 +141,11 @@ public class FileManagerView extends JFrame {
     }
 
     private void renew(JList<String> list) {
+        list.repaint();
+        list.revalidate();
+    }
+
+    private void renew(JLabel list) {
         list.repaint();
         list.revalidate();
     }

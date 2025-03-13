@@ -1,7 +1,6 @@
 package org.content;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,14 +9,10 @@ public class FileDirectory {
     public static final String ROOT_DIRECTORY_PATH = "C:\\";
     public static final String PARENT_PATH = "/..";
     private File directory;
-    private Optional<File> parentDirectory;
     private final List<File> directories;
     private final List<File> files;
-    private final boolean isLeft;
 
-    public FileDirectory(boolean isLeft) {
-        this.isLeft = isLeft;
-        parentDirectory = Optional.empty();
+    public FileDirectory() {
         directories = new ArrayList<>();
         files = new ArrayList<>();
         setDirectory(getRootDirectory());
@@ -33,31 +28,15 @@ public class FileDirectory {
         setFilesAndDirectories();
     }
 
-    public void printFiles() {
-        System.out.print(getParentString());
-        System.out.print(getDirectoriesString());
-        System.out.print(getFilesString());
+    public String getAbsolutePath(){
+        return directory.getAbsolutePath();
     }
 
-    public List<File> getAllFiles() {
-        List<File> allFiles = new ArrayList<>();
-        parentDirectory.ifPresent(allFiles::add);
-        allFiles.addAll(directories);
-        allFiles.addAll(files);
-        return allFiles;
-    }
-
-    public List<String> getAllFilesString(){
+    public List<String> getAllString(){
         List<String> allFiles = new ArrayList<>();
-        if(isLeft) allFiles.add(ROOT_DIRECTORY_PATH);
-        else parentDirectory.ifPresent((parentDirectory)->allFiles.add(PARENT_PATH));
         allFiles.addAll(getDirectoriesString());
         allFiles.addAll(getFilesString());
         return allFiles;
-    }
-
-    public String getParentString(){
-        return isRootDirectory(directory) ? "" : PARENT_PATH+"\n";
     }
 
     public List<String> getDirectoriesString(){
@@ -84,15 +63,9 @@ public class FileDirectory {
     }
 
     private void setFilesAndDirectories() {
-        if(isRootDirectory(directory)) {
-            parentDirectory = Optional.empty();
-        }
         File[] directoryFiles = directory.listFiles();
         directories.clear();
         files.clear();
-        if(!isRootDirectory(directory)) {
-            parentDirectory = Optional.of(directory.getParentFile());
-        }
         if(directoryFiles == null) return;
         for(File file : directoryFiles) {
             if(file.isDirectory()) directories.add(file);
