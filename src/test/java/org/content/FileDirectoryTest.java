@@ -15,9 +15,18 @@ public class FileDirectoryTest {
     }
 
     @Test
-    @DisplayName("FileDirectory 객체의 경로를 설정하고, 객체의 디렉토리와 파일을 출력할 수 있다.")
+    @DisplayName("FileDirectory 객체를 생성하고 초기값으로 초기화 할 수 있다.")
+    void 객체_초기화_생성(){
+        fileDirectory = new FileDirectory();
+        fileDirectory.printFiles();
+    }
+
+    @Test
+    @DisplayName("FileDirectory 객체의 경로를 설정하고, 객체의 부모, 디렉토리와 파일을 출력할 수 있다.")
     void 객체_생성_및_출력() {
         fileDirectory.setDirectory(new File("C://Users/hulli/Desktop/be-mdir/files"));
-        fileDirectory.printFiles();
+        assertThat(fileDirectory.getParentString()).isEqualTo("/..\n" );
+        assertThat(fileDirectory.getDirectoriesString()).isEqualTo("/direc\n" );
+        assertThat(fileDirectory.getFilesString()).isEqualTo("hello.txt\n");
     }
 }
