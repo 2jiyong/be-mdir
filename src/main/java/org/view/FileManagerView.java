@@ -13,13 +13,14 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 public class FileManagerView extends JFrame {
     private FileDirectory leftDirectory;
     private FileDirectory rightDirectory;
-    private JList<File> leftFileList;
-    private JList<File> rightFileList;
+    private JList<String> leftFileList;
+    private JList<String> rightFileList;
     private File currentDirectory;
 
     public FileManagerView() {
@@ -33,8 +34,8 @@ public class FileManagerView extends JFrame {
         rightDirectory = new FileDirectory();
         currentDirectory = FileDirectory.getRootDirectory();
 
-        leftFileList = new JList<>(leftDirectory.getAllFiles().toArray(new File[0]));
-        rightFileList = new JList<>(rightDirectory.getAllFiles().toArray(new File[0]));
+        leftFileList = new JList<>(leftDirectory.getAllFilesString().toArray(new String[0]));
+        rightFileList = new JList<>(rightDirectory.getAllFilesString().toArray(new String[0]));
 
         leftFileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rightFileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -71,33 +72,51 @@ public class FileManagerView extends JFrame {
         else leftDirectory.setDirectory(file.getParentFile());
         rightDirectory.setDirectory(file);
 
-        leftFileList.setListData(leftDirectory.getAllFiles().toArray(new File[0]));
-        rightFileList.setListData(rightDirectory.getAllFiles().toArray(new File[0]));
+        leftFileList.setListData(leftDirectory.getAllFilesString().toArray(new String[0]));
+        rightFileList.setListData(rightDirectory.getAllFilesString().toArray(new String[0]));
 
         renew(leftFileList);
         renew(rightFileList);
     }
 
     private void addEventToList(){
-        addDoubleClickEvent(leftFileList);
-        addDoubleClickEvent(rightFileList);
+        addDoubleClickEventToLeft(leftFileList);
+        addDoubleClickEventToRight(rightFileList);
     }
 
-    private void addDoubleClickEvent(JList<File> fileList) {
+    private void addDoubleClickEventToLeft(JList<String> fileList) {
         fileList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) { // 더블 클릭 감지
-                    File selectedFile = fileList.getSelectedValue();
-                    if (selectedFile != null) {
-                        updateFileList(selectedFile);
+                    String fileName = fileList.getSelectedValue();
+                    if (fileName != null) {
+                        updateFileList(selectFile(leftDirectory, fileName));
                     }
                 }
             }
         });
     }
 
-    private void renew(JList<File> list) {
+    private void addDoubleClickEventToRight(JList<String> fileList) {
+        fileList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // 더블 클릭 감지
+                    String fileName = fileList.getSelectedValue();
+                    if (fileName != null) {
+                        updateFileList(selectFile(rightDirectory, fileName));
+                    }
+                }
+            }
+        });
+    }
+
+    private File selectFile(FileDirectory directory, String fileName){
+        return new File(directory.getDirectory(), fileName);
+    }
+
+    private void renew(JList<String> list) {
         list.repaint();
         list.revalidate();
     }

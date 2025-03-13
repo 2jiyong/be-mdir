@@ -21,6 +21,10 @@ public class FileDirectory {
         setDirectory(getRootDirectory());
     }
 
+    public File getDirectory() {
+        return directory;
+    }
+
     public void setDirectory(File directory) {
         if(!directory.exists()) return;
         this.directory = directory;
@@ -41,27 +45,39 @@ public class FileDirectory {
         return allFiles;
     }
 
+    public List<String> getAllFilesString(){
+        List<String> allFiles = new ArrayList<>();
+        parentDirectory.ifPresent((parentDirectory)->allFiles.add(PARENT_PATH));
+        allFiles.addAll(getDirectoriesString());
+        allFiles.addAll(getFilesString());
+        return allFiles;
+    }
+
     public String getParentString(){
         return isRootDirectory(directory) ? "" : PARENT_PATH+"\n";
     }
 
-    public String getDirectoriesString(){
-        StringBuilder stringBuilder = new StringBuilder();
+    public List<String> getDirectoriesString(){
+        List<String> allDirectories = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
         for(File file : directories) {
-            stringBuilder.append("/");
-            stringBuilder.append(file.getName());
-            stringBuilder.append("\n");
+            sb.append("/");
+            sb.append(file.getName());
+            allDirectories.add(sb.toString());
+            sb.setLength(0);
         }
-        return stringBuilder.toString();
+        return allDirectories;
     }
 
-    public String getFilesString(){
-        StringBuilder stringBuilder = new StringBuilder();
+    public List<String> getFilesString(){
+        List<String> allFiles = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
         for(File file : files) {
-            stringBuilder.append(file.getName());
-            stringBuilder.append("\n");
+            sb.append(file.getName());
+            allFiles.add(sb.toString());
+            sb.setLength(0);
         }
-        return stringBuilder.toString();
+        return allFiles;
     }
 
     private void setFilesAndDirectories() {
