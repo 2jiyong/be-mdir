@@ -13,8 +13,10 @@ public class FileDirectory {
     private Optional<File> parentDirectory;
     private final List<File> directories;
     private final List<File> files;
+    private final boolean isLeft;
 
-    public FileDirectory() {
+    public FileDirectory(boolean isLeft) {
+        this.isLeft = isLeft;
         parentDirectory = Optional.empty();
         directories = new ArrayList<>();
         files = new ArrayList<>();
@@ -47,7 +49,8 @@ public class FileDirectory {
 
     public List<String> getAllFilesString(){
         List<String> allFiles = new ArrayList<>();
-        parentDirectory.ifPresent((parentDirectory)->allFiles.add(PARENT_PATH));
+        if(isLeft) allFiles.add(ROOT_DIRECTORY_PATH);
+        else parentDirectory.ifPresent((parentDirectory)->allFiles.add(PARENT_PATH));
         allFiles.addAll(getDirectoriesString());
         allFiles.addAll(getFilesString());
         return allFiles;

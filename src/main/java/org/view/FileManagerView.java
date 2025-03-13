@@ -30,8 +30,8 @@ public class FileManagerView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(1, 2));
 
-        leftDirectory = new FileDirectory();
-        rightDirectory = new FileDirectory();
+        leftDirectory = new FileDirectory(true);
+        rightDirectory = new FileDirectory(false);
         currentDirectory = FileDirectory.getRootDirectory();
 
         leftFileList = new JList<>(leftDirectory.getAllFilesString().toArray(new String[0]));
@@ -91,7 +91,7 @@ public class FileManagerView extends JFrame {
                 if (e.getClickCount() == 2) { // 더블 클릭 감지
                     String fileName = fileList.getSelectedValue();
                     if (fileName != null) {
-                        updateFileList(selectFile(leftDirectory, fileName));
+                        updateFileList(selectLeftFile(leftDirectory, fileName));
                     }
                 }
             }
@@ -105,14 +105,20 @@ public class FileManagerView extends JFrame {
                 if (e.getClickCount() == 2) { // 더블 클릭 감지
                     String fileName = fileList.getSelectedValue();
                     if (fileName != null) {
-                        updateFileList(selectFile(rightDirectory, fileName));
+                        updateFileList(selectRightFile(rightDirectory, fileName));
                     }
                 }
             }
         });
     }
 
-    private File selectFile(FileDirectory directory, String fileName){
+    private File selectRightFile(FileDirectory directory, String fileName){
+        if(fileName.equals(FileDirectory.PARENT_PATH)) return directory.getDirectory().getParentFile();
+        return new File(directory.getDirectory(), fileName);
+    }
+
+    private File selectLeftFile(FileDirectory directory, String fileName){
+        if(fileName.equals(FileDirectory.ROOT_DIRECTORY_PATH)) return new File(FileDirectory.ROOT_DIRECTORY_PATH);
         return new File(directory.getDirectory(), fileName);
     }
 
