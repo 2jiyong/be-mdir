@@ -4,6 +4,8 @@ import org.content.FileDirectory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -16,6 +18,8 @@ public class FileManagerView extends JFrame {
     private JList<String> rightFileList;
     private JLabel leftPathLabel;
     private JLabel rightPathLabel;
+    private JList<String> activeList; // 현재 선택된 리스트
+
 
     public FileManagerView() {
         super("파일 탐색기");
@@ -59,6 +63,8 @@ public class FileManagerView extends JFrame {
         buttonPanel.add(moveLeftButton);
         buttonPanel.add(Box.createVerticalStrut(10)); // 간격 추가
         buttonPanel.add(moveRightButton);
+        moveLeftButton.addActionListener(e -> switchActiveList(leftFileList));
+        moveRightButton.addActionListener(e -> switchActiveList(rightFileList));
 
 
         JSplitPane leftRightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
@@ -69,8 +75,10 @@ public class FileManagerView extends JFrame {
         mainSplitPane.setDividerLocation(850); // 오른쪽 버튼 패널을 작게 설정
 
         addEventToList();
+        addKeyEventToList();
 
         add(mainSplitPane);
+        activeList = leftFileList; // 기본적으로 왼쪽 리스트를 활성화
 
         SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
@@ -137,6 +145,73 @@ public class FileManagerView extends JFrame {
 
     private File selectLeftFile(FileDirectory directory, String fileName){
         if(fileName.equals(FileDirectory.ROOT_DIRECTORY_PATH)) return new File(FileDirectory.ROOT_DIRECTORY_PATH);
+        return new File(directory.getDirectory(), fileName);
+    }
+
+    private void addKeyEventToList() {
+        KeyAdapter keyAdapter = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (activeList == null) return;
+                int keyCode = e.getKeyCode();
+
+                switch (keyCode) {
+                    case KeyEvent.VK_LEFT -> {
+                        switchActiveList(leftFileList);
+                        e.consume(); // 기본 동작 방지
+                    }
+                    case KeyEvent.VK_RIGHT -> {
+                        switchActiveList(rightFileList);
+                        e.consume();
+                    }
+                    case KeyEvent.VK_UP -> {
+                        moveSelection(-1);
+                        e.consume();
+                    }
+                    case KeyEvent.VK_DOWN -> {
+                        moveSelection(1);
+                        e.consume();
+                    }
+                    case KeyEvent.VK_ENTER -> {
+                        openSelectedDirectory();
+                        e.consume();
+                    }
+                }
+            }
+        };
+
+        leftFileList.addKeyListener(keyAdapter);
+        rightFileList.addKeyListener(keyAdapter);
+    }
+
+    private void switchActiveList(JList<String> newActiveList) {
+        activeList = newActiveList;
+        activeList.requestFocus();
+    }
+
+    private void moveSelection(int direction) {
+        int currentIndex = activeList.getSelectedIndex();
+        if (currentIndex == -1) currentIndex = 0;
+        int newIndex = Math.max(0, Math.min(activeList.getModel().getSize() - 1, currentIndex + direction));
+        activeList.setSelectedIndex(newIndex);
+    }
+
+    private void openSelectedDirectory() {
+        String selectedValue = activeList.getSelectedValue();
+        if (selectedValue == null) return;
+
+        File selectedFile = activeList == leftFileList
+                ? selectFile(leftDirectory, selectedValue)
+                : selectFile(rightDirectory, selectedValue);
+
+        if (selectedFile.isDirectory()) {
+            updateFileList(selectedFile);
+        }
+    }
+
+    private File selectFile(FileDirectory directory, String fileName) {
+        if (fileName.equals(FileDirectory.PARENT_PATH)) return directory.getDirectory().getParentFile();
+        if (fileName.equals(FileDirectory.ROOT_DIRECTORY_PATH)) return new File(FileDirectory.ROOT_DIRECTORY_PATH);
         return new File(directory.getDirectory(), fileName);
     }
 
