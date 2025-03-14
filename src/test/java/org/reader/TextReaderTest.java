@@ -26,7 +26,7 @@ public class TextReaderTest {
     @Test
     @DisplayName("TextReader가 텍스트 파일의 내용으로 텍스트 객체를 생성할 수 있다.")
     void textReader_read_text_file() {
-        Path path = basePath.resolve("hello.txt");
+        Path path = Paths.get("hello.txt");
         Optional<TextContent> textContent = textReader.read(path);
         assertThat(textContent).isPresent();
         assertThat(textContent.get().getText()).isEqualTo("hello world");
